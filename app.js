@@ -1,26 +1,32 @@
 require('dotenv').config();
-
 const express = require('express');
-
-const Sequelize = require('sequelize');
-
-const sequelize = new Sequelize('sistemaProfessores', 'root', process.env.DB_PASS, {
-  host: 'localhost',
-  dialect: 'mysql',
-});
-
-sequelize.authenticate().then(()=>{
-  console.log('Success!');
-}).catch((error) => {
-  console.log(`Erros: ${error}`);
-});
+const handlebars = require('express-handlebars');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
 
-app.get('/', (req, res) => {
-  res.send('hellow express world');
-});
+// Cors
+const corsOptions = {
+  origin: 'http://localhost:8081',
+};
 
-app.listen(3000, () => {
+app.use(cors(corsOptions));
+
+// Body Parser
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json());
+
+// Handlebars
+app.engine('handlebars', handlebars({
+  defaultLayout: 'main',
+  runtimeOptions: {
+    allowProtoPropertiesByDefault: true,
+    allowProtoMethodsByDefault: true,
+  },
+}));
+app.set('view engine', 'handlebars');
+
+app.listen(8080, () => {
   console.log('hellow world');
 });
