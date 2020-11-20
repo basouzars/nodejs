@@ -1,6 +1,7 @@
+const parseISO = require('date-fns');
 const db = require('../models/db');
+const Student = require('../models/student');
 
-const Student = db.students;
 const { Op } = db.Sequelize;
 
 // Create and Save a new Student
@@ -14,7 +15,7 @@ exports.create = (req, res) => {
 
   const student = {
     name: req.body.name,
-    birthday: req.body.birthday,
+    birthday: parseISO(req.body.birthday),
     email: req.body.email,
     approved: req.body.approved ? req.body.approved : false,
     points: req.body.points ? req.body.points : 0,
@@ -68,23 +69,21 @@ exports.update = (req, res) => {
 
   Student.update(req.body, {
     where: { id },
-  })
-    .then((num) => {
-      if (num === 1) {
-        res.send({
-          message: 'Student was updated successfully.',
-        });
-      } else {
-        res.send({
-          message: `Cannot update Student with id:${id}. Maybe Student was not found or req.body is empty!`,
-        });
-      }
-    })
-    .catch(() => {
-      res.status(500).send({
-        message: `Error updating Student with id:${id}`,
+  }).then((num) => {
+    if (num === 1) {
+      res.send({
+        message: 'Student was updated successfully.',
       });
+    } else {
+      res.send({
+        message: `Cannot update Student with id:${id}. Maybe Student was not found or req.body is empty!`,
+      });
+    }
+  }).catch(() => {
+    res.status(500).send({
+      message: `Error updating Student with id:${id}`,
     });
+  });
 };
 
 // Delete a Student with the specified id in the request

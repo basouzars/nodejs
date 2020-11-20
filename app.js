@@ -3,8 +3,14 @@ const express = require('express');
 const handlebars = require('express-handlebars');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { sequelize } = require('./models/db');
+
+const Teacher = require('./models/teacher');
+const Student = require('./models/student');
 
 const app = express();
+
+sequelize.sync();
 
 // Cors
 const corsOptions = {
@@ -26,6 +32,10 @@ app.engine('handlebars', handlebars({
   },
 }));
 app.set('view engine', 'handlebars');
+
+// Routes
+require('./routes/teacher')(app);
+require('./routes/student')(app);
 
 app.listen(8080, () => {
   console.log('hellow world');

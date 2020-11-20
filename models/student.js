@@ -1,4 +1,5 @@
 const db = require('./db');
+const Teacher = require('./teacher');
 
 const Student = db.sequelize.define('students', {
   name: {
@@ -17,5 +18,7 @@ const Student = db.sequelize.define('students', {
     type: db.Sequelize.BOOLEAN,
   },
 });
+
+Student.belongsToMany(Teacher, { through: 'students_teachers' });
 
 module.exports = Student;
